@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Textile Production Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background-color: #f4f7f6; }
+        .card { border: 1px solid #ddd; padding: 20px; border-radius: 12px; background: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        h1 { color: #2c3e50; }
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+        .kpi-value { font-size: 24px; font-weight: bold; color: #27ae60; }
+    </style>
+</head>
+<body>
+    <h1>Textile Production Dashboard</h1>
+    <div id="kpis" class="kpi-grid card">Loading KPIs...</div>
+    <div class="card">
+        <canvas id="yieldChart"></canvas>
+    </div>
+    <script>
+        fetch('/api/kpis')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('kpis').innerHTML = `
+                    <div class="card"><p>Yield</p><p class="kpi-value">${data.yield_pct}%</p></div>
+                    <div class="card"><p>On-Time Delivery</p><p class="kpi-value">${data.on_time_delivery}%</p></div>
+                    <div class="card"><p>Wastage</p><p class="kpi-value" style="color: #e74c3c">${data.total_wastage}%</p></div>
+                    <div class="card"><p>Fill Rate</p><p class="kpi-value">${data.order_fill_rate}%</p></div>
+                `;
+            });
+    </script>
+</body>
+</html>
