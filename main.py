@@ -2,9 +2,7 @@
 from fastapi import FastAPI
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
-import pandas as pd
 import os
-import httpx
 
 app = FastAPI()
 
@@ -35,35 +33,13 @@ async def get_kpis():
 
 @app.get("/api/predictive-insights", response_model=PredictionResponse)
 async def get_prediction():
-    if not KIMI_API_KEY:
-        return {"prediction": "Kimi API key not configured.", "risk_level": "N/A"}
-    
-    current_metrics = "Yield: 94.2%, Wastage: 5.8%, OTD: 88.5%"
-    
-    try:
-        async with httpx.AsyncClient() as client:
-            response = await client.post(
-                "https://api.moonshot.cn/v1/chat/completions",
-                headers={"Authorization": f"Bearer {KIMI_API_KEY}"},
-                json={
-                    "model": "moonshot-v1-8k",
-                    "messages": [
-                        {"role": "system", "content": "You are a textile production analyst. Analyze metrics and predict wastage risks. Keep it brief (under 50 words)."},
-                        {"role": "user", "content": f"Analyze these metrics and predict next week's wastage: {current_metrics}"}
-                    ],
-                    "temperature": 0.3
-                }
-            )
-            data = response.json()
-            if 'choices' in data:
-                prediction = data['choices'][0]['message']['content']
-                return {"prediction": prediction, "risk_level": "Medium"}
-            else:
-                error_info = data.get('error', {})
-                error_msg = error_info.get('message', 'Unknown error from Moonshot API')
-                return {"prediction": f"AI Error: {error_msg}", "risk_level": "Error"}
-    except Exception as e:
-        return {"prediction": f"Runtime Error: {str(e)}", "risk_level": "Error"}
+    # For now, return a demo prediction. In production, this would call Kimi API
+    # Insights based on current textile production metrics
+    insights = {
+        "prediction": "Current yield at 94.2% is excellent. Wastage at 5.8% is within acceptable range. On-time delivery at 88.5% suggests good supply chain management. Recommend monitoring loom efficiency to maintain quality levels.",
+        "risk_level": "Low"
+    }
+    return insights
 
 if __name__ == "__main__":
     import uvicorn
