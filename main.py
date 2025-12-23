@@ -1,3 +1,4 @@
+# Textile Dashboard Backend with Kimi K2 AI
 from fastapi import FastAPI
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
