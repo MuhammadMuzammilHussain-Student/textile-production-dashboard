@@ -183,6 +183,51 @@
       <p>Last Updated: <span id="timestamp">Loading...</span> | Powered by Kimi K2 AI</p>
     </div>
   </div>
+    <!-- Alerts Section -->
+    <div class="card" style="background: linear-gradient(135deg, #fff3cd 0%, #ffe69c 100%); border-left: 5px solid #ffc107;">
+      <h3 style="margin-bottom: 20px; color: #856404;">🚨 Active Alerts & Notifications</h3>
+      <div id="alerts-container">
+        <p style="color: #856404;">Loading alerts...</p>
+      </div>
+    </div>
+
+    <!-- Inventory Section -->
+    <div class="card">
+      <h3 style="margin-bottom: 20px; color: #2c3e50;">📦 Inventory Status</h3>
+      <div class="metrics-grid">
+        <div class="metric-box">
+          <h4>Material Availability</h4>
+          <div class="metric-detail">
+            <span class="metric-label">Raw Materials</span>
+            <span class="metric-val">85.3%</span>
+          </div>
+          <div class="metric-detail">
+            <span class="metric-label">Finished Goods</span>
+            <span class="metric-val">42.7%</span>
+          </div>
+          <div class="metric-detail">
+            <span class="metric-label">Work in Progress</span>
+            <span class="metric-val">23.5%</span>
+          </div>
+        </div>
+        <div class="metric-box">
+          <h4>Stock Levels</h4>
+          <div class="metric-detail">
+            <span class="metric-label">Cotton Yarn</span>
+            <span class="metric-val">450 kg</span>
+          </div>
+          <div class="metric-detail">
+            <span class="metric-label">Synthetic Yarn</span>
+            <span class="metric-val">320 kg</span>
+          </div>
+          <div class="metric-detail">
+            <span class="metric-label">Dyes</span>
+            <span class="metric-val">125 L ⚠️</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
 
   <script>
     // Fetch KPIs
@@ -266,6 +311,25 @@
     });
 
     // Update timestamp
+
+    // Fetch Alerts
+    fetch('/api/alerts')
+      .then(res => res.json())
+      .then(data => {
+        const alertsDiv = document.getElementById('alerts-container');
+        alertsDiv.innerHTML = '';
+        data.alerts.forEach(alert => {
+          const alertEl = document.createElement('div');
+          alertEl.style.marginBottom = '10px';
+          alertEl.style.padding = '10px';
+          alertEl.style.borderRadius = '5px';
+          alertEl.style.backgroundColor = alert.type === 'warning' ? '#fff3cd' : '#d1ecf1';
+          alertEl.style.borderLeft = `4px solid ${alert.type === 'warning' ? '#ffc107' : '#17a2b8'}`;
+          alertEl.innerHTML = `<strong>${alert.title}</strong><br><small>${alert.message}</small><br><small style="color: #666;">${alert.timestamp}</small>`;
+          alertsDiv.appendChild(alertEl);
+        });
+      })
+      .catch(err => console.error('Alerts Error:', err));
     function updateTimestamp() {
       const now = new Date();
       document.getElementById('timestamp').innerText = now.toLocaleString();
