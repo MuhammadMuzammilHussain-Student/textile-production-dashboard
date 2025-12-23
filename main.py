@@ -55,10 +55,15 @@ async def get_prediction():
                 }
             )
             data = response.json()
-            prediction = data['choices'][0]['message']['content']
-            return {"prediction": prediction, "risk_level": "Medium"}
+            if 'choices' in data:
+                prediction = data['choices'][0]['message']['content']
+                return {"prediction": prediction, "risk_level": "Medium"}
+            else:
+                error_info = data.get('error', {})
+                error_msg = error_info.get('message', 'Unknown error from Moonshot API')
+                return {"prediction": f"AI Error: {error_msg}", "risk_level": "Error"}
     except Exception as e:
-        return {"prediction": f"Error calling Kimi API: {str(e)}", "risk_level": "Error"}
+        return {"prediction": f"Runtime Error: {str(e)}", "risk_level": "Error"}
 
 if __name__ == "__main__":
     import uvicorn
